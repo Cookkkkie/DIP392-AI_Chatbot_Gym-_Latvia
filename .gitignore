@@ -1,0 +1,17 @@
+/target/
+*.log
+*.class
+*.jar
+*.war
+
+/node_modules/
+*.log
+
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### VS Code ###
+.vscode/
