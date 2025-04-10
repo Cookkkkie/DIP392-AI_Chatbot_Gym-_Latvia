@@ -1,11 +1,16 @@
 package chatbot.chatbot;
 
-import org.springframework.ai.chat.ChatResponse;
+import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.ai.chat.ChatResponse;
+
 import reactor.core.publisher.Flux;
+
 
 @RestController
 public class ChatbotController  {
@@ -16,8 +21,14 @@ public class ChatbotController  {
     }
 
     @PostMapping("/chatbot")
-    public Flux<ChatResponse> sendMessage(@RequestBody ChatbotRequest request) {
+    public Map<String, String> sendMessage(@RequestBody ChatbotRequest request) {
         System.out.println("Message received: " + request.message());
-        return _chatbotService.handleMessageRequest(request.message());
+        var response = _chatbotService.handleMessageRequest(request.message());
+        return Map.of("generation", response);
+    }
+
+    @GetMapping("/ai/generateStream")
+    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+        return _chatbotService.generateStream(message);
     }
 }
