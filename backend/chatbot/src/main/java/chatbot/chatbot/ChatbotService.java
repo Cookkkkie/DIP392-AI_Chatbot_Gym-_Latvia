@@ -30,7 +30,7 @@ public class ChatbotService {
         System.out.println("\nHistory of conversation" + conversationHistory);
         String response = chatModel.call(ollamaPrompt + conversationHistory);
         redisService.saveHistory(userId, "\nAI:\n" + response);
-        System.out.println("\nHistory of conversation after response:\n" + conversationHistory);
+        System.out.println("\nHistory of conversation after response:\n" + redisService.getHistory(userId));
         return response;
     }
 
