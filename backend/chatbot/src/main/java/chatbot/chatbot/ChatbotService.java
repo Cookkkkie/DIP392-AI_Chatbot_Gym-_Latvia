@@ -1,8 +1,6 @@
 package chatbot.chatbot;
 
 import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,30 +10,33 @@ import reactor.core.publisher.Flux;
 public class ChatbotService {
 
     private final OllamaChatClient chatModel;
-    private final StringBuilder conversationHistory = new StringBuilder();
+    private final RedisService redisService;
+    private final String ollamaPrompt;
 
     @Autowired
-    public ChatbotService(OllamaChatClient _chatModel) {
+    public ChatbotService(OllamaChatClient _chatModel, RedisService _redisService) {
         chatModel = _chatModel;
-        conversationHistory.append(InitialPrompts.chatBot);
-        conversationHistory.append(InitialPrompts.FAQ);
-        conversationHistory.append(InitialPrompts.GeneralTerms);
-        conversationHistory.append(InitialPrompts.internalRules);
-        conversationHistory.append(InitialPrompts.policies);
-
+        redisService = _redisService;
+        this.ollamaPrompt = InitialPrompts.chatBot
+                    + InitialPrompts.FAQ
+                    + InitialPrompts.GeneralTerms
+                    + InitialPrompts.InternalRules
+                    + InitialPrompts.Policies;
     }
 
-    public String handleMessageRequest(String message) {
-        conversationHistory.append("\nUser: ").append(message);
-        String response = chatModel.call(conversationHistory.toString());
-        conversationHistory.append("\nAI: ").append(response);
+    public String handleMessageRequest(String userId, String message) {
+        redisService.saveHistory(userId, "\nUser:\n" + message);
+        String conversationHistory = redisService.getHistory(userId);
+        System.out.println("\nHistory of conversation" + conversationHistory);
+        String response = chatModel.call(ollamaPrompt + conversationHistory);
+        redisService.saveHistory(userId, "\nAI:\n" + response);
+        System.out.println("\nHistory of conversation after response:\n" + conversationHistory);
         return response;
     }
 
     public Flux<ChatResponse> generateStream(String message) {
-        conversationHistory.append("\nUser: ").append(message);
-        Prompt prompt = new Prompt(new UserMessage(conversationHistory.toString()));
-        Flux<ChatResponse> stream = chatModel.stream(prompt);
-        return stream;
+        // Prompt prompt = new Prompt(new UserMessage(conversationHistory.toString()));
+        // Flux<ChatResponse> stream = chatModel.stream(prompt);
+        return null;
     }
 }

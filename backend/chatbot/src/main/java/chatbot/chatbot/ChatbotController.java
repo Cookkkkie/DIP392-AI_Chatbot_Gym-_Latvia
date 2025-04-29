@@ -23,7 +23,7 @@ public class ChatbotController  {
     @PostMapping("/chatbot")
     public Map<String, String> sendMessage(@RequestBody ChatbotRequest request) {
         System.out.println("Message received: " + request.message());
-        var response = _chatbotService.handleMessageRequest(request.message());
+        var response = _chatbotService.handleMessageRequest(request.userId(), request.message());
         return Map.of("generation", response);
     }
 
