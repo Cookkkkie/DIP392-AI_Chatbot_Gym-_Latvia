@@ -320,7 +320,7 @@ public class InitialPrompts {
             "this Agreement.\n" +
             "9.2. Any and all notifications and correspondence are deemed received within five days after they are sent.";
 
-    public static final String internalRules = "1. These Rules must be observed by all Clients and all other individuals who visit the Sports Club and\n" +
+    public static final String InternalRules = "1. These Rules must be observed by all Clients and all other individuals who visit the Sports Club and\n" +
             "use its services.\n" +
             "2. Video surveillance has been installed in the Sports Club for security purposes.\n" +
             "3. The Sports Club may only be visited and used by Clients who are at least 15 years old. Persons under\n" +
@@ -412,7 +412,7 @@ public class InitialPrompts {
             "not been announced. Each exit is equipped with a security system and video surveillance. A fine of 57 \n" +
             "EUR is applicable for unjustified opening and departure of the operative service.";
 
-    public static final String policies = "Gym Latvija SIA (‘Gym Latvija’ or ‘we’) values its clients (‘you’) feeling well and safe with us. \n" +
+    public static final String Policies = "Gym Latvija SIA (‘Gym Latvija’ or ‘we’) values its clients (‘you’) feeling well and safe with us. \n" +
             "This is why we will make sure to protect your personal data that we have access to.\n" +
             "The objective of this Privacy Policy is to explain to you the purposes for which we will collect \n" +
             "and use your personal data, as well as your rights that pertain to your personal data.\n" +

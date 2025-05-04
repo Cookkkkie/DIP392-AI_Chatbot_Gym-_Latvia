@@ -1,3 +1,3 @@
 package chatbot.chatbot;
 
-public record ChatbotRequest(String message){}
+public record ChatbotRequest(String userId, String message){}

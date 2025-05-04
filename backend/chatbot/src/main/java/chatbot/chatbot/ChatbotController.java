@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.ai.chat.ChatResponse;
 
 import reactor.core.publisher.Flux;
 
-
+@Slf4j
 @RestController
 public class ChatbotController  {
 
@@ -22,8 +24,8 @@ public class ChatbotController  {
 
     @PostMapping("/chatbot")
     public Map<String, String> sendMessage(@RequestBody ChatbotRequest request) {
-        System.out.println("Message received: " + request.message());
-        var response = _chatbotService.handleMessageRequest(request.message());
+        log.info("Message received: " + request.message() + " from user id: " + request.userId());
+        var response = _chatbotService.handleMessageRequest(request.userId(), request.message());
         return Map.of("generation", response);
     }
 
