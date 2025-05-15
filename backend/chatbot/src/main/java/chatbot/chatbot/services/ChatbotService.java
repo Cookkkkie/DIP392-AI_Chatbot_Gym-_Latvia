@@ -1,5 +1,6 @@
-package chatbot.chatbot;
+package chatbot.chatbot.services;
 
+import chatbot.chatbot.config.InitialPrompts;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.beans.factory.annotation.Autowired;

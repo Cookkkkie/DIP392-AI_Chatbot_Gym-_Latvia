@@ -1,6 +1,9 @@
-package chatbot.chatbot;
+package chatbot.chatbot.controller;
 
 import java.util.Map;
+
+import chatbot.chatbot.dto.ChatbotRequest;
+import chatbot.chatbot.services.ChatbotService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

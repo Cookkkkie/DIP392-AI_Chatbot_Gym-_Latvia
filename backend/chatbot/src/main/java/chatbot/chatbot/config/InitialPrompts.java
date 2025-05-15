@@ -1,4 +1,4 @@
-package chatbot.chatbot;
+package chatbot.chatbot.config;
 
 public class InitialPrompts {
         public static String HTML_PAGE = "";
