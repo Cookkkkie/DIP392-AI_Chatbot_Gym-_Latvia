@@ -32,14 +32,14 @@ public class ChatbotController  {
         return Map.of("generation", response);
     }
 
-    @GetMapping("/ai/generateStream")
-    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        return _chatbotService.generateStream(message);
-    }
-
     @GetMapping("/refresh")
     public String refreshData() {
         _chatbotService.refreshSiteContent();
         return "Knowledge base has been refreshed successfully.";
     }
+
+//    @GetMapping("/ai/generateStream")
+//    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+//        return _chatbotService.generateStream(message);
+//    }
 }

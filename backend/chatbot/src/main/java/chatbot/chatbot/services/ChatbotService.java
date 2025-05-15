@@ -1,14 +1,14 @@
 package chatbot.chatbot.services;
 
 import chatbot.chatbot.config.InitialPrompts;
-import org.springframework.ai.chat.ChatResponse;
+import jakarta.annotation.PostConstruct;
 import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
+
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -16,76 +16,74 @@ public class ChatbotService {
 
     private final OllamaChatClient chatModel;
     private final RedisService redisService;
-    private final String ollamaPrompt;
+    private final HtmlReadService parser;
 
     @Autowired
-    public ChatbotService(OllamaChatClient _chatModel, RedisService _redisService) {
+    public ChatbotService(OllamaChatClient _chatModel, RedisService _redisService, HtmlReadService _parser) {
         chatModel = _chatModel;
         redisService = _redisService;
-        this.ollamaPrompt = InitialPrompts.chatBot
-                    + InitialPrompts.FAQ
-                    + InitialPrompts.GeneralTerms
-                    + InitialPrompts.InternalRules
-                    + InitialPrompts.Policies;
+        parser = _parser;
     }
 
     public String handleMessageRequest(String userId, String message) {
+        log.info("Received message from userId={}, messageLength={} chars", userId, message == null ? 0 : message.length());
         String conversationHistory = redisService.getHistory(userId);
-        log.info("\nHistory of conversation" + conversationHistory);
-        String messageToOllamaFormatted = buildOllamaRequest(conversationHistory, message, InitialPrompts.HTML_PAGE != "" ? InitialPrompts.HTML_PAGE : ollamaPrompt);
+        log.debug("UserId={} conversationHistory length={} chars", userId, conversationHistory == null ? 0 : conversationHistory.length());
+
+        String messageToOllamaFormatted = buildOllamaRequest(conversationHistory, message, InitialPrompts.FAQ, InitialPrompts.chatBot);
+        log.debug("Built Ollama prompt for userId={}, promptLength={} chars", userId, messageToOllamaFormatted.length());
+
         String response = chatModel.call(messageToOllamaFormatted);
+        log.info("Received response from Ollama for userId={}, responseLength={} chars", userId, response.length());
 
         redisService.saveHistory(userId, "\nUser:\n" + message + "\nAI:\n" + response);
-        log.info("\nHistory of conversation after response:\n" + redisService.getHistory(userId));
+        log.debug("Updated conversationHistory for userId={}, newLength={} chars", userId, redisService.getHistory(userId).length());
+
         return response;
     }
 
-    public Flux<ChatResponse> generateStream(String message) {
-        // Prompt prompt = new Prompt(new UserMessage(conversationHistory.toString()));
-        // Flux<ChatResponse> stream = chatModel.stream(prompt);
-        return null;
-    }
+    private String buildOllamaRequest(String history,
+                                      String userMessage,
+                                      String faq,
+                                      String systemMessage) {
 
-    private String buildOllamaRequest(String conversationHistory, String message, String ollamaPrompt) {
-        if (conversationHistory == null || conversationHistory.isBlank()) {
-            return String.format("Answer the following message: %s using this knowledge base: %s", message, ollamaPrompt);
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("You are a GymLatvija chatbot. Follow these rules:\n")
+                .append(systemMessage).append("\n\n");
+
+        if (faq == null || faq.isEmpty()) {
+            log.warn("FAQ knowledge base is unavailable, user queries will not have FAQ context");
+            sb.append("The knowledge base is not available at the moment. Suggest the customer contacts support at info@gymlatija.lv.");
+        } else {
+            sb.append("Reference FAQ:\n").append(faq).append("\n\n");
         }
-    
-        return String.format("According to previous history %s, answer the following message: %s using this knowledge base: %s",
-                             conversationHistory, message, ollamaPrompt);
+
+        if (history != null && !history.isBlank()) {
+            sb.append("Conversation history:\n").append(history).append("\n\n");
+        }
+
+        sb.append("Based on context, answer message. Use the language of the message provided: ").append(userMessage).append("\n");
+
+        return sb.toString();
     }
 
+    @PostConstruct
     public void refreshSiteContent() {
-        System.out.println("[INFO] Refreshing GymLatvia knowledge base from web...");
-
-        InitialPrompts.HTML_PAGE = fetchAndStripHtml("https://www.gymlatvija.lv/faq", "HTML_PAGE fallback");
-        System.out.println("[INFO] Fetched FAQ content. Length: " + InitialPrompts.HTML_PAGE.length());
-
-        // this.termsText = fetchAndExtractPdf("https://static1.squarespace.com/...General-Terms-EN.pdf", "Terms fallback");
-        // System.out.println("[INFO] Fetched General Terms content. Length: " + termsText.length());
-
-        // this.rulesText = fetchAndExtractPdf("https://static1.squarespace.com/...Internal-Rules-EN-2025.pdf", "Rules fallback");
-        // System.out.println("[INFO] Fetched Internal Rules content. Length: " + rulesText.length());
-
-        // this.privacyText = fetchAndExtractPdf("https://static1.squarespace.com/...Privacy%2BPolicy-EN_2023.pdf", "Privacy fallback");
-        // System.out.println("[INFO] Fetched Privacy Policy content. Length: " + privacyText.length());
-
-        // this.cookiesText = fetchAndExtractPdf("https://static1.squarespace.com/...Cookie-Purpose.pdf", "Cookies fallback");
-        // System.out.println("[INFO] Fetched Cookies Policy content. Length: " + cookiesText.length());
-
-        System.out.println("[INFO] Site content parsing completed successfully.");
-    }
-
-    private String fetchAndStripHtml(String url, String fallback) {
+        log.info("Loading GymLatvia FAQ at startup...");
         try {
-            String html = WebClient.create().get().uri(url).retrieve().bodyToMono(String.class).block();
-            if (html != null) {
-                System.out.println(html.replaceAll("(?s)<[^>]*>", "").trim());
-                return html.replaceAll("(?s)<[^>]*>", "").trim();
-            }
-        } catch (Exception e) {
-            System.out.println("[WARN] Failed to fetch HTML from " + url + ": " + e.getMessage());
+            InitialPrompts.FAQ = parser.getFaqEntries();
+            log.info("Successfully loaded FAQ, length {} chars", InitialPrompts.FAQ.length());
+        } catch (IOException e) {
+            log.error("Failed to load FAQ on startup", e);
+            throw new RuntimeException("Could not initialize FAQ", e);
         }
-        return fallback;
     }
 }
+
+
+//    public Flux<ChatResponse> generateStream(String message) {
+//        // Prompt prompt = new Prompt(new UserMessage(conversationHistory.toString()));
+//        // Flux<ChatResponse> stream = chatModel.stream(prompt);
+//        return null;
+//    }
