@@ -1,4 +1,4 @@
-package chatbot.chatbot;
+package chatbot.chatbot.services;
 
 import java.time.Duration;
 
