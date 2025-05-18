@@ -1,6 +1,9 @@
-package chatbot.chatbot;
+package chatbot.chatbot.controller;
 
 import java.util.Map;
+
+import chatbot.chatbot.dto.ChatbotRequest;
+import chatbot.chatbot.services.ChatbotService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,8 +32,14 @@ public class ChatbotController  {
         return Map.of("generation", response);
     }
 
-    @GetMapping("/ai/generateStream")
-    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        return _chatbotService.generateStream(message);
+    @GetMapping("/refresh")
+    public String refreshData() {
+        _chatbotService.refreshSiteContent();
+        return "Knowledge base has been refreshed successfully.";
     }
+
+//    @GetMapping("/ai/generateStream")
+//    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+//        return _chatbotService.generateStream(message);
+//    }
 }
