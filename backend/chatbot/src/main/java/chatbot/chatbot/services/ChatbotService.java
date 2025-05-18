@@ -79,6 +79,11 @@ public class ChatbotService {
             throw new RuntimeException("Could not initialize FAQ", e);
         }
     }
+
+    public String loadConversationHistoryBuUserId(String userId) {
+        String conversationHistory = redisService.getHistory(userId);
+        return conversationHistory == null ? "" : conversationHistory;
+    }
 }
 
 
