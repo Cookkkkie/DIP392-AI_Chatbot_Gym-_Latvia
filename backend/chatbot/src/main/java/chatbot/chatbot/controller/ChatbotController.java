@@ -31,6 +31,18 @@ public class ChatbotController  {
         var response = _chatbotService.handleMessageRequest(request.userId(), request.message());
         return Map.of("generation", response);
     }
+    // TODO: Only for testing, delete
+    @PostMapping("/test")
+    public Map<String, String> testSendMessage(@RequestBody ChatbotRequest request) {
+        // log.info("Message received: " + request.message() + " from user id: " + request.userId());
+        // var response = _chatbotService.handleMessageRequest(request.userId(), request.message());
+        return Map.of("generation", "Test mock Ollama response");
+    }
+
+    @GetMapping(value = "/conversation")
+    public String getConversationHistory(@RequestParam String userId) {
+        return _chatbotService.loadConversationHistoryBuUserId(userId);
+    }
 
     @GetMapping("/refresh")
     public String refreshData() {
