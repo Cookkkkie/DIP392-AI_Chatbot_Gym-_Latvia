@@ -6,4 +6,9 @@ public class AppConstants {
     public static final String NO_FAQ_ERROR_MESSAGE = "Could not initialize FAQ";
     public static final String CHATBOT_DEFINITION = "You are a GymLatvija chatbot. Follow these rules:\\n";
     public static final Integer CONVERSATION_HISTORY_EXPIRATION_TIME = 30; // in minutes
+    public static final String[] CORS_ALLOWED_ORIGINS = {
+        "http://localhost:4200",
+        "http://127.0.0.1:5500", // Live server of HTML page
+        "https://www.gymlatvija.lv"
+    };
 }
