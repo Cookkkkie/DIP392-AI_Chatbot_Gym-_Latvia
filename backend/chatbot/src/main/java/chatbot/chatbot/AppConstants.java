@@ -11,4 +11,5 @@ public class AppConstants {
         "http://127.0.0.1:5500", // Live server of HTML page
         "https://www.gymlatvija.lv"
     };
+    public static final Integer UPDATE_KNOWLEDGE_BASE_REQUEST_TIMEOUT = 10000; // in milliseconds
 }
