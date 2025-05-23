@@ -1,5 +1,6 @@
 package chatbot.chatbot.services;
 
+import chatbot.chatbot.AppConstants;
 import chatbot.chatbot.config.InitialPrompts;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.ollama.OllamaChatClient;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,7 +24,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 class ChatbotServiceTest {
@@ -41,7 +42,7 @@ class ChatbotServiceTest {
 
     private String originalFaq;
     private String originalSystemMsg;
-    private final String userId = "52";
+    private final String userId = UUID.randomUUID().toString();
     private final String userMsg = "some question";
     private final String botResponse = "response";
     private final String expectedAppend = "\nUser:\n" + userMsg + "\nAI:\n" + botResponse;
@@ -57,7 +58,6 @@ class ChatbotServiceTest {
         InitialPrompts.FAQ = originalFaq;
         InitialPrompts.chatBot = originalSystemMsg;
     }
-
 
     @Test
     void handleMessageRequest_withHistoryAndFaq_buildsPromptAndUpdatesHistory() {
@@ -82,7 +82,7 @@ class ChatbotServiceTest {
         verify(mockChatModel).call(promptCaptor.capture());
         String prompt = promptCaptor.getValue();
 
-        assertTrue(prompt.startsWith("You are a GymLatvija chatbot. Follow these rules:\n"), "Missing header");
+        assertTrue(prompt.startsWith(AppConstants.CHATBOT_DEFINITION), "Missing header");
         assertTrue(prompt.contains(sysMsg), "Missing system message");
         assertTrue(prompt.contains("Reference FAQ:\n" + faqData), "Missing FAQ block");
         assertTrue(prompt.contains("Conversation history:\n" + prevHistory), "Missing conversation history");
@@ -109,8 +109,8 @@ class ChatbotServiceTest {
         verify(mockChatModel).call(cap.capture());
         String prompt = cap.getValue();
         assertTrue(prompt.contains(
-                "The knowledge base is not available at the moment. Suggest the customer contacts support at info@gymlatija.lv."
-        ), "Should include support suggestion");
+                AppConstants.KNOWLEDGE_BASE_UPDATE_FAILURE_MESSAGE),
+                "Should include support suggestion");
         assertFalse(prompt.contains("Conversation history:"), "Should not mention conversation history when it's null");
 
         verify(mockRedisService).saveHistory(userId, expectedAppend);
@@ -130,7 +130,7 @@ class ChatbotServiceTest {
     void refreshSiteContent_failure_throwsRuntimeException() throws IOException {
         when(mockParser.getFaqEntries()).thenThrow(new IOException("I/O error"));
         RuntimeException ex = assertThrows(RuntimeException.class, () -> chatbotService.refreshSiteContent());
-        assertTrue(ex.getMessage().contains("Could not initialize FAQ"));
+        assertTrue(ex.getMessage().contains(AppConstants.NO_FAQ_ERROR_MESSAGE));
         verify(mockParser).getFaqEntries();
     }
 }

@@ -37,9 +37,9 @@ public class HtmlReadService {
                 sibling = sibling.nextElementSibling();
             }
 
-            entries.add(("Question: " + questionText +"\n"+ "Answer: " + answerLines).toString());
+            entries.add(("Question: " + questionText + "\n" + "Answer: " + answerLines).toString());
         }
-//        System.out.println(String.join("\n\n", entries));
+        // System.out.println(String.join("\n\n", entries));
         return String.join("\n\n", entries);
     }
 }

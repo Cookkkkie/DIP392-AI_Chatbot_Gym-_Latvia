@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class RedisService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    
+
     public void saveHistory(String userId, String data) {
         redisTemplate.opsForValue().append(userId, data);
         redisTemplate.expire(userId, Duration.ofMinutes(30));
