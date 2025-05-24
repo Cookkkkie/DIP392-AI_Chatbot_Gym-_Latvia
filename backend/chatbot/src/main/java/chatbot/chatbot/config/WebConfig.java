@@ -7,18 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-   @Bean
-   public WebMvcConfigurer corsConfigurer() {
-       return new WebMvcConfigurer() {
+    @Bean
+    WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-               registry.addMapping("/**")
-                        .allowedOrigins(
-                            "http://localhost:4200",
-                            "http://127.0.0.1:5500", // Live server of HTML page
-                            "https://www.gymlatvija.lv"
-                        );
+                registry.addMapping("/**")
+                        .allowedOrigins(AppConstants.CORS_ALLOWED_ORIGINS);
             }
-       };
-   }
+        };
+    }
 }

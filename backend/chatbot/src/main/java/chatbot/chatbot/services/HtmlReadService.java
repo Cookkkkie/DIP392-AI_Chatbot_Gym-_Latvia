@@ -6,6 +6,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import chatbot.chatbot.config.AppConstants;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +15,12 @@ import java.util.List;
 @Service
 public class HtmlReadService {
 
-    private final String faqUrl = "https://www.gymlatvija.lv/faq";
+    private final String FAQ_URL = "https://www.gymlatvija.lv/faq";
 
     public String getFaqEntries() throws IOException {
-        Document doc = Jsoup.connect(faqUrl)
+        Document doc = Jsoup.connect(FAQ_URL)
                 .userAgent("Mozilla/5.0")
-                .timeout(10_000)
+                .timeout(AppConstants.UPDATE_KNOWLEDGE_BASE_REQUEST_TIMEOUT)
                 .get();
 
         List<String> entries = new ArrayList<>();
@@ -37,9 +39,9 @@ public class HtmlReadService {
                 sibling = sibling.nextElementSibling();
             }
 
-            entries.add(("Question: " + questionText +"\n"+ "Answer: " + answerLines).toString());
+            entries.add(("Question: " + questionText + "\n" + "Answer: " + answerLines).toString());
         }
-//        System.out.println(String.join("\n\n", entries));
+        // System.out.println(String.join("\n\n", entries));
         return String.join("\n\n", entries);
     }
 }

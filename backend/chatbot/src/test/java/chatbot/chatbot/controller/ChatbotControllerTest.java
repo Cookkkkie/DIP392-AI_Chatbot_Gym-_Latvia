@@ -1,7 +1,9 @@
 package chatbot.chatbot.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
+import chatbot.chatbot.config.AppConstants;
 import chatbot.chatbot.dto.ChatbotRequest;
 import chatbot.chatbot.services.ChatbotService;
 import org.junit.jupiter.api.Test;
@@ -27,16 +29,17 @@ class ChatbotControllerTest {
 
     @Test
     void sendMessage_whenCalled_delegatesToServiceAndReturnsMap() {
-        String userId  = "1414";
+        String userId  = UUID.randomUUID().toString();
         String message = "user message";
+        String mockReplyMessage = "bot reply";
 
         ChatbotRequest req = new ChatbotRequest(userId, message);
-        when(chatbotService.handleMessageRequest(userId, message)).thenReturn("bot reply");
+        when(chatbotService.handleMessageRequest(userId, message)).thenReturn(mockReplyMessage);
 
         Map<String, String> result = controller.sendMessage(req);
 
         assertNotNull(result, "Should never return null");
-        assertEquals("bot reply", result.get("generation"));
+        assertEquals(mockReplyMessage, result.get("generation"));
 
         verify(chatbotService, times(1)).handleMessageRequest(userId, message);
     }
@@ -46,7 +49,7 @@ class ChatbotControllerTest {
         String resp = controller.refreshData();
 
         assertEquals(
-                "Knowledge base has been refreshed successfully.",
+                AppConstants.KNOWLEDGE_BASE_UPDATE_SUCCESS_MESSAGE,
                 resp,
                 "Message returned does not match expected value."
         );
