@@ -6,7 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import chatbot.chatbot.AppConstants;
+import chatbot.chatbot.config.AppConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;

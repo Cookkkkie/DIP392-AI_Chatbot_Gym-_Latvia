@@ -3,7 +3,7 @@ package chatbot.chatbot.controller;
 import java.util.Map;
 import java.util.UUID;
 
-import chatbot.chatbot.AppConstants;
+import chatbot.chatbot.config.AppConstants;
 import chatbot.chatbot.dto.ChatbotRequest;
 import chatbot.chatbot.services.ChatbotService;
 import org.junit.jupiter.api.Test;

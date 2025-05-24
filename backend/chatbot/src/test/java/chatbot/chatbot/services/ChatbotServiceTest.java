@@ -1,6 +1,6 @@
 package chatbot.chatbot.services;
 
-import chatbot.chatbot.AppConstants;
+import chatbot.chatbot.config.AppConstants;
 import chatbot.chatbot.config.InitialPrompts;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package chatbot.chatbot;
+package chatbot.chatbot.config;
 
 public class AppConstants {
     public static final String KNOWLEDGE_BASE_UPDATE_SUCCESS_MESSAGE = "Knowledge base has been refreshed successfully.";

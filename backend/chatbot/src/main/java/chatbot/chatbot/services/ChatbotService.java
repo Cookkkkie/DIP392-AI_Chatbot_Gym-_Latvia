@@ -1,10 +1,9 @@
 package chatbot.chatbot.services;
 
-import chatbot.chatbot.AppConstants;
+import chatbot.chatbot.config.AppConstants;
 import chatbot.chatbot.config.InitialPrompts;
 import jakarta.annotation.PostConstruct;
 import org.springframework.ai.ollama.OllamaChatClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;

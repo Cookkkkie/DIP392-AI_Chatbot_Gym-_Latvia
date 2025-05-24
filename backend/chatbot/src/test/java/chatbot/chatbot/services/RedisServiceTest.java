@@ -7,7 +7,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.ValueOperations;
 
-import chatbot.chatbot.AppConstants;
+import chatbot.chatbot.config.AppConstants;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
