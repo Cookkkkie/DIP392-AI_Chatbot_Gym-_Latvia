@@ -50,11 +50,11 @@ mvn spring-boot:run
   }
 ```
 ### Team Members & Roles
-Mykyta Medvediev: Technical Lead and architect
-Oleksii Pecheniuk: Backend Developer 1.
-Ruslan Dzhubuev: Backend Developer 2.
-Mariana Mechyk: Q/A testing
-Ayomide Akintola: Functional developer. 
+Mykyta Medvediev: Technical Lead and Architect.<br/>
+Oleksii Pecheniuk: Backend Developer 1.<br/>
+Ruslan Dzhubuev: Backend Developer 2.<br/>
+Mariana Mechyk: Q/A testing.<br/>
+Ayomide Akintola: Functional developer.<br/>
 Agboola Peter: Functional developer. 
 
 ### Demo video link
