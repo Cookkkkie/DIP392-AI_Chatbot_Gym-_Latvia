@@ -27,15 +27,20 @@ git clone https://github.com/Cookkkkie/DIP392-AI_Chatbot_Gym-_Latvia.git
 cd DIP392-AI_Chatbot_Gym-_Latvia
 ```
 ### 2. Configure the Application
+```bash
 Edit application.p[roperties file:
 ollama.base-url=http://localhost:11434
 faq.source-url=https://www.gym.lv/faq
 spring.redis.host=localhost
 spring.redis.port=6379
+```
 ### 3. Run the Application using Maven
+```bash
 mvn clean install
 mvn spring-boot:run
+```
 ### 4. Test the API
+```bash
   POST http://localhost:5050/api/chat
   Content-Type: application/json
   
@@ -43,7 +48,7 @@ mvn spring-boot:run
     "userId": "GUID",
     "message": "What are the working hours in Gym?"
   }
-
+```
 ### Team Members & Roles
 Mykyta Medvediev: Technical Lead and architect
 Oleksii Pecheniuk: Backend Developer 1.
