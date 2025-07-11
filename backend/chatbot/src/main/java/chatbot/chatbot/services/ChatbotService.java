@@ -27,12 +27,13 @@ public class ChatbotService {
     public String handleMessageRequest(String userId, String message) {
         log.info("Received message from userId={}, messageLength={} chars", userId,
                 message == null ? 0 : message.length());
-        String conversationHistory = redisService.getHistory(userId);
-        log.debug("UserId={} conversationHistory length={} chars", userId,
-                conversationHistory == null ? 0 : conversationHistory.length());
+        // String conversationHistory = redisService.getHistory(userId);
+        // log.debug("UserId={} conversationHistory length={} chars", userId,
+        //         conversationHistory == null ? 0 : conversationHistory.length());
 
-        String messageToOllamaFormatted = buildOllamaRequest(conversationHistory, message, InitialPrompts.FAQ,
+        String messageToOllamaFormatted = buildOllamaRequest("", message, InitialPrompts.FAQ,
                 InitialPrompts.chatBot);
+        System.out.println(messageToOllamaFormatted);
         log.debug("Built Ollama prompt for userId={}, promptLength={} chars", userId,
                 messageToOllamaFormatted.length());
 
@@ -56,18 +57,18 @@ public class ChatbotService {
         sb.append(AppConstants.CHATBOT_DEFINITION)
                 .append(systemMessage).append("\n\n");
 
-        if (faq == null || faq.isEmpty()) {
-            log.warn("FAQ knowledge base is unavailable, user queries will not have FAQ context");
-            sb.append(AppConstants.KNOWLEDGE_BASE_UPDATE_FAILURE_MESSAGE);
-        } else {
-            sb.append("Reference FAQ:\n").append(faq).append("\n\n");
-        }
+        // if (faq == null || faq.isEmpty()) {
+        //     log.warn("FAQ knowledge base is unavailable, user queries will not have FAQ context");
+        //     sb.append(AppConstants.KNOWLEDGE_BASE_UPDATE_FAILURE_MESSAGE);
+        // } else {
+        //     sb.append("Reference FAQ:\n").append(faq).append("\n\n");
+        // }
 
-        if (history != null && !history.isBlank()) {
-            sb.append("Conversation history:\n").append(history).append("\n\n");
-        }
+        // if (history != null && !history.isBlank()) {
+        //     sb.append("Conversation history:\n").append(history).append("\n\n");
+        // }
 
-        sb.append("Based on context, answer message. Use the language of the message provided: ").append(userMessage)
+        sb.append("Based on context, answer message using the language of the message provided: ").append(userMessage)
                 .append("\n");
 
         return sb.toString();
