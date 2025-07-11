@@ -1,0 +1,47 @@
+version: '3.9'
+networks:
+  gym-lavia-chat:
+services:
+  chatbot-ai:
+    build:
+      context: /backend/chatbot
+      dockerfile: Dockerfile 
+    ports:
+      - 5050:5050
+    networks:
+      - gym-lavia-chat
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - 11435:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - gym-lavia-chat
+    entrypoint: ["ollama", "serve"]
+  redis:
+    image: redis:latest
+    container_name: redis
+    environment:
+      - REDIS_PASSWORD=
+      - REDIS_USERNAME=
+      - REDIS_USER_PASSWORD=
+    ports:
+      - 6380:6379
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - gym-lavia-chat
+  web:
+    image: nginx:alpine
+    ports: 
+      - 8080:80
+    volumes:
+    - ./frontend:/usr/share/nginx/html:ro
+    networks:
+      - gym-lavia-chat
+volumes:
+  ollama_data:
+  redis_data:
