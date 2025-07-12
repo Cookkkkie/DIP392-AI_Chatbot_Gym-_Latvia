@@ -1,6 +1,7 @@
 export const CHATBOT = {
-    // CHATBOT_API_BASE_URL: 'http://localhost:5050',
-    CHATBOT_API_BASE_URL: 'http://localhost:8080',
+    CHATBOT_API_BASE_URL: 'http://localhost:5050',
+    //CHATBOT_API_BASE_URL: 'http://chatbot-ai:5050',
+    //CHATBOT_API_BASE_URL: 'http://localhost:8080',
 
     RESPONDER: {
         AI: "ai",	

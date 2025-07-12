@@ -3,32 +3,38 @@ networks:
   gym-lavia-chat:
 services:
   chatbot-ai:
+    image: chatbot-ai:latest
     build:
-      context: /backend/chatbot
+      context: ./backend/chatbot
       dockerfile: Dockerfile 
     ports:
       - 5050:5050
+    # volumes:
+    #   - ./backend/chatbot/chatbot/resources/applicaition.properties:/app/applicaition.properties
     networks:
       - gym-lavia-chat
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     ports:
-      - 11435:11434
+      - 11434:11434
     volumes:
       - ollama_data:/root/.ollama
+      - ./backend/chatbot/ollama:/modelfiles
+    # entrypoint: >
+    #   sh -c "ollama serve & sleep 5 && ollama create gym-latvia-chatbot-llama3 -f /modelfiles/Modelfile && wait" 
+    entrypoint: ["ollama", "serve"]
     networks:
       - gym-lavia-chat
-    entrypoint: ["ollama", "serve"]
   redis:
     image: redis:latest
     container_name: redis
-    environment:
-      - REDIS_PASSWORD=
-      - REDIS_USERNAME=
-      - REDIS_USER_PASSWORD=
+    # environment:
+    #   - REDIS_PASSWORD=
+    #   - REDIS_USERNAME=
+    #   - REDIS_USER_PASSWORD=
     ports:
-      - 6380:6379
+      - 6379:6379
     volumes:
       - redis_data:/data
     restart: unless-stopped

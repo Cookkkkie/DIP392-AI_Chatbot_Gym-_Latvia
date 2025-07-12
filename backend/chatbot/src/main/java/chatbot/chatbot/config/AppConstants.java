@@ -9,6 +9,7 @@ public class AppConstants {
     public static final String[] CORS_ALLOWED_ORIGINS = {
         "http://localhost:4200",
         "http://127.0.0.1:5500", // Live server of HTML page
+        "http://web1:8080", // Live server of HTML page
         "https://www.gymlatvija.lv"
     };
     public static final Integer UPDATE_KNOWLEDGE_BASE_REQUEST_TIMEOUT = 10000; // in milliseconds
